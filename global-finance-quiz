@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เกมถามตอบ: ระบบการเงินโลก</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-b from-slate-50 to-white min-h-screen flex items-center justify-center p-6">
+  <div id="app" class="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-6 md:p-10"></div>
+
+  <script>
+    const questions = [
+      {q: "บทบาทหลักของ IMF (กองทุนการเงินระหว่างประเทศ) คืออะไร?", options: ["ให้สินเชื่อระยะยาวแก่ธุรกิจเอกชน","รักษาเสถียรภาพทางการเงินและให้ความช่วยเหลือทางการเงินแก่ประเทศที่เผชิญวิกฤต","ออกธนบัตรและเหรียญของแต่ละประเทศ","เป็นตลาดซื้อขายหุ้นระหว่างประเทศ"], a: 1},
+      {q: "ธนาคารโลก (World Bank) เน้นบทบาทด้านใดมากที่สุด?", options: ["การพัฒนาในระยะยาวและลดความยากจน","การกำหนดอัตราดอกเบี้ยระยะสั้น","การออกบัตรเครดิตทั่วโลก","เป็นผู้ตรวจสอบบัญชีระหว่างประเทศ"], a: 0},
+      {q: "ตลาดเงิน (Money Market) มีลักษณะอย่างไร?", options: ["ตราสารมีอายุเกิน 10 ปี","ตราสารระยะสั้น (อายุไม่เกิน 1 ปี) เพื่อรักษาสภาพคล่อง","เป็นตลาดหุ้นสำหรับบริษัทขนาดเล็ก","เป็นตลาดซื้อขายอสังหาริมทรัพย์"], a: 1},
+      {q: "ตัวอย่างตราสารในตลาดเงินข้อใดคือ T-bill (ตั๋วเงินคลัง)?", options: ["พันธบัตรรัฐบาลระยะยาว 20 ปี","ตราสารหนีระยะสั้นที่ไม่จ่ายดอกเบี้ยเป็นงวด แต่ขายด้วยส่วนลด","หุ้นสามัญ","ใบรับฝากเงิน (CD)"], a: 1},
+      {q: "ข้อใดคือหน้าที่สำคัญของธนาคารกลาง?", options: ["กำหนดและดำเนินนโยบายการเงิน ควบคุมปริมาณเงิน และเป็น Lender of Last Resort","จัดตั้งกองทุนรวมเพื่อประชาชนทั่วไป","ออกหุ้นของรัฐวิสาหกิจ","บริหารการส่งเสริมการท่องเที่ยว"], a: 0},
+      {q: "ระบบชำระเงินไร้รอยต่อระหว่างประเทศ (Cross-border seamless payment) เช่น PromptPay-PayNow มีประโยชน์อย่างไร?", options: ["ทำให้การโอนเงินข้ามประเทศช้าขึ้น","ช่วยให้โอนเงินข้ามพรมแดนเร็ว สะดวก และมีค่าธรรมเนียมต่ำกว่าแบบเดิม","ลดความปลอดภัยในการชำระเงิน","ทำให้ต้องพกเงินสดมากขึ้น"], a: 1},
+      {q: "อะไรคือ Repurchase Agreement (Repo)?", options: ["สัญญาขายหลักทรัพย์แล้วสัญญาซื้อคืนในอนาคตเพื่อกู้ยืมระยะสั้น","การออกหุ้นเพิ่มทุน","การแลกเปลี่ยนสกุลเงินทันที","ตราสารหนี้ที่ไม่มีหลักประกัน"], a: 0},
+      {q: "บทบาทหลักของ BIS (Bank for International Settlements) คืออะไร?", options: ["เป็นศูนย์กลางของธนาคารกลางทั่วโลกและช่วยกำหนดมาตรฐานการเงิน","เป็นธนาคารพาณิชย์ขนาดใหญ่ที่สุด","ออกสกุลเงินดิจิทัลสำหรับประเทศสมาชิก","ให้สินเชื่อบุคคลทั่วไป"], a: 0},
+      {q: "ข้อใดเป็นตัวอย่างของตลาดทุน (Capital Market)?", options: ["ตลาดพันธบัตรรัฐบาลระยะสั้น","ตลาดหุ้น (Stock Exchange) และการออกพันธบัตรระยะยาว","ตลาดฝากประจำของธนาคาร","ตลาดแลกเปลี่ยนเงินตราต่างประเทศ (Forex) เท่านั้น"], a: 1},
+      {q: "ขั้นตอนการชำระเงินผ่านบัตร (เช่น Visa) ขั้นแรกคืออะไร?", options: ["Authorization — เครื่องรูดบัตรส่งคำขออนุมัติไปยังธนาคารผู้รับ","การแปลงค่าเงินและอนุมัติ","การถอนเงินจากตู้ ATM","การคืนเงิน (Refund)"], a: 0}
+    ];
+
+    let index = 0;
+    let score = 0;
+
+    function renderQuestion() {
+      const q = questions[index];
+      const app = document.getElementById('app');
+      app.innerHTML = `
+        <header class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold">เกมถามตอบ: ระบบการเงินโลก</h1>
+            <p class="text-sm text-slate-500 mt-1">คำถาม ${index+1} / ${questions.length} คะแนน: ${score}</p>
+          </div>
+        </header>
+        <main>
+          <div class="text-lg font-semibold mb-4">${q.q}</div>
+          <div class="grid gap-3 mt-3">
+            ${q.options.map((opt,i)=>`<button class='p-3 rounded-lg border bg-white hover:bg-sky-50 text-left' onclick='checkAnswer(${i})'>${String.fromCharCode(65+i)}. ${opt}</button>`).join('')}
+          </div>
+        </main>
+      `;
+    }
+
+    window.checkAnswer = function(i){
+      if(i===questions[index].a){score++;}
+      index++;
+      if(index<questions.length){renderQuestion();}else{renderResult();}
+    }
+
+    function renderResult(){
+      const app=document.getElementById('app');
+      app.innerHTML=`
+        <div class='text-center py-10'>
+          <h2 class='text-2xl font-bold mb-3'>ผลลัพธ์ของคุณ</h2>
+          <p class='text-lg mb-6'>คุณได้คะแนน ${score} / ${questions.length}</p>
+          <button onclick='restartGame()' class='px-6 py-2 rounded-md bg-green-600 text-white'>เล่นอีกครั้ง</button>
+          <section class='mt-8 text-left'>
+            <h3 class='font-semibold mb-2'>เฉลยคำถาม</h3>
+            <ol class='list-decimal ml-6 space-y-2'>
+              ${questions.map((qq,idx)=>`<li><div class='font-medium'>${qq.q}</div><div class='text-sm text-slate-600'>คำตอบที่ถูกต้อง: ${String.fromCharCode(65+qq.a)}. ${qq.options[qq.a]}</div></li>`).join('')}
+            </ol>
+          </section>
+        </div>
+      `;
+    }
+
+    window.restartGame=function(){index=0;score=0;renderQuestion();}
+
+    renderQuestion();
+  </script>
+</body>
+</html>
